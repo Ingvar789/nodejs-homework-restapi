@@ -1,16 +1,10 @@
 const HttpError = require("../helpers/HttpError");
-const Joi = require("joi");
-const {addContact} = require("../models/contacts");
+const {joiSchemas} = require("../models/contact");
 
-const contactSchema = Joi.object({
-    name: Joi.string().required().messages({'any.required':`missing required name field`}),
-    email: Joi.string().required().messages({'any.required':`missing required email field`}),
-    phone: Joi.any().required().messages({'any.required':`missing required phone field`}),
-})
 
 const validateAddContact = async (req, res, next) => {
     try {
-        const validationResult = contactSchema.validate(req.body, {abortEarly:false});
+        const validationResult = joiSchemas.contactSchemaJoi.validate(req.body, {abortEarly:false});
         if (validationResult.error){
             throw HttpError(400,validationResult.error.message);
         }
@@ -26,7 +20,7 @@ const validateContactUpdate = async (req, res, next) => {
             throw HttpError(400, "missing fields");
         }
 
-        const validationResult = contactSchema.validate(req.body, { abortEarly: false });
+        const validationResult = joiSchemas.contactSchemaJoi.validate(req.body, { abortEarly: false });
         if (validationResult.error){
             throw HttpError(400,validationResult.error.message);
         }
@@ -36,7 +30,19 @@ const validateContactUpdate = async (req, res, next) => {
     }
 }
 
+const validateContactFavoriteUpdate = async (req, res, next) =>{
+    try {
+        const validationResult = joiSchemas.updateFavoriteSchemaJoi.validate(req.body, { abortEarly: false });
+        if (validationResult.error){
+            throw HttpError(400, "missing field favorite");
+        }
+        next();
+    } catch (e) {
+        next(e);
+    }
+}
 module.exports = {
     validateAddContact,
-    validateContactUpdate
+    validateContactUpdate,
+    validateContactFavoriteUpdate,
 }

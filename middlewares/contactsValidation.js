@@ -41,6 +41,7 @@ const validateContactFavoriteUpdate = async (req, res, next) =>{
         next(e);
     }
 }
+
 module.exports = {
     validateAddContact,
     validateContactUpdate,

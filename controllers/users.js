@@ -70,10 +70,10 @@ const controllerLogout = async (req, res, next) => {
 }
 const controllerGetCurrent = async (req, res, next) => {
     try {
-        const {name, email} = req.user;
+        const {email, subscription} = req.user;
         res.json({
-            name,
             email,
+            subscription,
         })
     }
     catch (e){

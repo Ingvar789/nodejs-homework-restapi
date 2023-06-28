@@ -43,6 +43,9 @@ const userSchemaMongoose = new Schema({
         minLength: 6,
         required: [true, 'Set password for user'],
     },
+    avatarURL: {
+        type: String,
+    },
     subscription: {
         type: String,
         enum: subscriptions,

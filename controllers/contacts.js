@@ -1,5 +1,6 @@
 const HttpError = require("../helpers/HttpError");
 const { Contact} = require("../models/contact");
+const controlWrapper = require("../decorators/controllWrapper");
 
 const controllerListContacts = async (req, res) => {
     const {_id: owner} = req.user;
@@ -15,33 +16,22 @@ const controllerListContacts = async (req, res) => {
     res.json(contacts);
 }
 
-const controllerGetContactById = async (req, res, next) => {
-    try {
+const controllerGetContactById = async (req, res) => {
         const {contactId}=req.params;
         const contact = await Contact.findById(contactId);
         if (!contact){
             throw HttpError(404, "Not found")
         }
         res.json(contact);
-    }
-    catch (e) {
-        next(e);
-    }
 }
 
-const controllerAddContact = async (req, res, next) => {
-    try {
+const controllerAddContact = async (req, res) => {
         const {_id: owner} = req.user;
         const contact = await Contact.create({...req.body, owner});
         res.status(201).json(contact);
-    }
-    catch (e) {
-        next(e)
-    }
 }
 
-const controllerRemoveContact = async (req, res, next) => {
-    try {
+const controllerRemoveContact = async (req, res) => {
         const {contactId}=req.params;
         const response = await Contact.findByIdAndRemove(contactId);
         if (!response){
@@ -50,44 +40,31 @@ const controllerRemoveContact = async (req, res, next) => {
         res.json({
             message: "contact deleted"
         });
-    }
-    catch (e) {
-        next(e)
-    }
 }
-const controllerUpdateContact = async (req, res, next) => {
-    try{
+const controllerUpdateContact = async (req, res) => {
         const {contactId} = req.params;
         const contact = await Contact.findByIdAndUpdate(contactId, req.body, {new: true});
         if(contact === null){
             throw HttpError(404, "Not found");
         }
         res.json(contact);
-    }
-    catch (e){
-        next(e);
-    }
+
 }
 
-const controllerUpdateStatusContact  = async (req, res, next) => {
-    try{
+const controllerUpdateStatusContact  = async (req, res) => {
         const {contactId} = req.params;
         const contact = await Contact.findByIdAndUpdate(contactId, req.body, {new: true});
         if(contact === null){
-            throw HttpError(404, "Not found");
+            throw HttpError(404, "Not found")
         }
         res.json(contact);
-    }
-    catch (e){
-        next(e);
-    }
 }
 
 module.exports = {
-    controllerListContacts,
-    controllerGetContactById,
-    controllerAddContact,
-    controllerRemoveContact,
-    controllerUpdateContact,
-    controllerUpdateStatusContact,
+    controllerListContacts: controlWrapper(controllerListContacts),
+    controllerGetContactById: controlWrapper(controllerGetContactById),
+    controllerAddContact: controlWrapper(controllerAddContact),
+    controllerRemoveContact: controlWrapper(controllerRemoveContact),
+    controllerUpdateContact: controlWrapper(controllerUpdateContact),
+    controllerUpdateStatusContact: controlWrapper(controllerUpdateStatusContact),
 }

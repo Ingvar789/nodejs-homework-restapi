@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const {DB_HOST} = process.env;
 mongoose.set("strictQuery", true);
 mongoose.connect(DB_HOST)
-    .then(() => app.listen(3000, () => {
+    .then(() => app.listen(3001, () => {
       console.log("Database connection successful");
     }))
     .catch((error) => {

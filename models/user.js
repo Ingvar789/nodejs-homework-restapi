@@ -30,7 +30,6 @@ const joiAuthSchemas = {
 const userSchemaMongoose = new Schema({
     name: {
         type:String,
-        required: [true, 'Set password for user'],
     },
     email: {
         type: String,

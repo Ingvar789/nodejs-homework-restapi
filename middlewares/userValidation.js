@@ -3,6 +3,7 @@ const {joiAuthSchemas} = require("../models/user");
 
 const validateRegister = async (req, res, next) => {
     try {
+        console.log(req.body) ;
         if (Object.keys(req.body).length === 0){
             throw HttpError(400, "missing fields");
         }

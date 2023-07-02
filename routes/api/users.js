@@ -1,14 +1,27 @@
 const express = require("express");
-const {controllerRegister, controllerLogin, controllerGetCurrent, controllerLogout, controllerUpdateSubscription, controllerUpdateAvatar} = require("../../controllers/users");
-const {validateRegister, validateLogin, validateSubscription} = require("../../middlewares/userValidation");
+const {
+    controllerRegister,
+    controllerLogin,
+    controllerGetCurrent,
+    controllerLogout,
+    controllerUpdateSubscription,
+    controllerUpdateAvatar,
+    controllerVerifyEmail,
+    controllerResendVerifyEmail
+        } = require("../../controllers/users");
+const {validateRegister, validateLogin, validateSubscription, validateEmailVerification} = require("../../middlewares/userValidation");
 const authentication = require("../../middlewares/authentication");
 const upload = require("../../middlewares/upload");
 
 const router = express.Router();
 
-// sighup
+// register
 router.post("/register", upload.single('avatar'), validateRegister, controllerRegister);
-// sigh in
+// email verify
+router.get("/verify/:verificationToken", controllerVerifyEmail);
+// resend email verification
+router.post("/verify", validateEmailVerification, controllerResendVerifyEmail);
+// login
 router.post("/login", validateLogin, controllerLogin);
 // logout
 router.post("/logout", authentication, controllerLogout);
@@ -18,5 +31,6 @@ router.get("/current", authentication, controllerGetCurrent);
 router.patch("/", authentication, validateSubscription, controllerUpdateSubscription);
 // avatar
 router.patch("/avatars", authentication, upload.single('avatar'), controllerUpdateAvatar);
+
 
 module.exports = router;

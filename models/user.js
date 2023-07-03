@@ -21,10 +21,14 @@ const userSchemaSubscriptionJoi = Joi.object({
     subscription: Joi.string().valid(...subscriptions).required().messages({'any.required':`subscription must be one of ${subscriptions} `}),
 })
 
+const userEmailVerificationJoi = Joi.object({
+    email: Joi.string().pattern(emailRegex).required().messages({'any.required':`missing required email field`}),
+})
 const joiAuthSchemas = {
     userSchemaRegisterJoi,
     userSchemaLoginJoi,
     userSchemaSubscriptionJoi,
+    userEmailVerificationJoi
 }
 
 const userSchemaMongoose = new Schema({
@@ -50,7 +54,15 @@ const userSchemaMongoose = new Schema({
         enum: subscriptions,
         default: "starter"
     },
-    token: String
+    token: String,
+    verify: {
+        type: Boolean,
+        default: false,
+    },
+    verificationToken: {
+        type: String,
+        required: [true, 'Verify token is required'],
+    },
 }, {versionKey: false, timestamps: true});
 
 userSchemaMongoose.post("save", handleMongooseError);

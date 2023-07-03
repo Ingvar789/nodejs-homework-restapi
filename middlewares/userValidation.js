@@ -45,8 +45,22 @@ const validateSubscription = async (req, res, next) =>{
         next(e);
     }
 }
+
+const validateEmailVerification = async (req, res, next) =>{
+    try {
+        const validationResult = joiAuthSchemas.userEmailVerificationJoi.validate(req.body, { abortEarly: false });
+        if (validationResult.error){
+            throw HttpError(400,validationResult.error.message);
+        }
+        next();
+    } catch (e) {
+        next(e);
+    }
+}
+
 module.exports = {
     validateRegister,
     validateLogin,
     validateSubscription,
+    validateEmailVerification
 }
